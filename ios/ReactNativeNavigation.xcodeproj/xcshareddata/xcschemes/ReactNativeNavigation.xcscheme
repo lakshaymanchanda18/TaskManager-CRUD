@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "ReactNativeNavigation.app"
-               BlueprintName = "ReactNativeNavigation"
-               ReferencedContainer = "container:ReactNativeNavigation.xcodeproj">
+               BuildableName = "TaskManager-CRUD.app"
+               BlueprintName = "TaskManager-CRUD"
+               ReferencedContainer = "container:TaskManager-CRUD.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "ReactNativeNavigationTests.xctest"
-               BlueprintName = "ReactNativeNavigationTests"
-               ReferencedContainer = "container:ReactNativeNavigation.xcodeproj">
+               BuildableName = "TaskManager-CRUDTests.xctest"
+               BlueprintName = "TaskManager-CRUDTests"
+               ReferencedContainer = "container:TaskManager-CRUD.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ReactNativeNavigation.app"
-            BlueprintName = "ReactNativeNavigation"
-            ReferencedContainer = "container:ReactNativeNavigation.xcodeproj">
+            BuildableName = "TaskManager-CRUD.app"
+            BlueprintName = "TaskManager-CRUD"
+            ReferencedContainer = "container:TaskManager-CRUD.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ReactNativeNavigation.app"
-            BlueprintName = "ReactNativeNavigation"
-            ReferencedContainer = "container:ReactNativeNavigation.xcodeproj">
+            BuildableName = "TaskManager-CRUD.app"
+            BlueprintName = "TaskManager-CRUD"
+            ReferencedContainer = "container:TaskManager-CRUD.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

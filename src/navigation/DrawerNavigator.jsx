@@ -72,7 +72,13 @@ const CustomDrawerContent = props => {
         }
       />
 
-      <DrawerItem label="Settings" onPress={() => {}} />
+      {/* ✅ FIXED: Settings navigation */}
+      <DrawerItem
+        label="Settings"
+        onPress={() =>
+          props.navigation.getParent().navigate('Settings')
+        }
+      />
 
       <DrawerItem
         label="Logout"

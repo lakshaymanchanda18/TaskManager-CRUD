@@ -34,14 +34,12 @@ const hash = str =>
     .toString();
 
 export const AuthProvider = ({ children }) => {
-  // ALWAYS DECLARE HOOKS FIRST — NO CONDITIONS
   const [user, setUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // LOAD DATA
   useEffect(() => {
-    const load = async () => {
+    (async () => {
       try {
         const storedUsers = await AsyncStorage.getItem(USERS_KEY);
         const current = await AsyncStorage.getItem(CURRENT_KEY);
@@ -53,24 +51,18 @@ export const AuthProvider = ({ children }) => {
         if (current) {
           setUser(JSON.parse(current));
         }
-      } catch (e) {
-        console.log('Auth load error', e);
       } finally {
         setLoading(false);
       }
-    };
-
-    load();
+    })();
   }, []);
 
-  // CHECK EMAIL EXISTS
   const emailExists = email => {
     return users.some(
       u => u.email.toLowerCase() === email.toLowerCase()
     );
   };
 
-  // REGISTER
   const register = async profile => {
     const newUser = {
       ...profile,
@@ -94,33 +86,20 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  // LOGIN
   const login = async profile => {
     setUser(profile);
+
     await AsyncStorage.setItem(
       CURRENT_KEY,
       JSON.stringify(profile)
     );
   };
 
-  // VERIFY PASSWORD
   const verifyPassword = inputPassword => {
     if (!user) return false;
     return hash(inputPassword) === user.password;
   };
 
-  // DELETE ACCOUNT
-  const deleteAccount = async email => {
-    const filtered = users.filter(u => u.email !== email);
-    setUsers(filtered);
-
-    await AsyncStorage.setItem(
-      USERS_KEY,
-      JSON.stringify(filtered)
-    );
-  };
-
-  // UPDATE PROFILE
   const updateProfile = async updated => {
     const fixed = {
       ...updated,
@@ -145,7 +124,24 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  // LOGOUT
+  /* 🔥 NEW: DELETE ACCOUNT */
+  const deleteAccount = async email => {
+    const filtered = users.filter(u => u.email !== email);
+
+    setUsers(filtered);
+
+    await AsyncStorage.setItem(
+      USERS_KEY,
+      JSON.stringify(filtered)
+    );
+
+    // If the deleted account was current (extra safety)
+    if (user?.email === email) {
+      setUser(null);
+      await AsyncStorage.removeItem(CURRENT_KEY);
+    }
+  };
+
   const logout = async () => {
     setUser(null);
     await AsyncStorage.removeItem(CURRENT_KEY);
@@ -158,15 +154,15 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         users,
-        loading,
-        isLoggedIn,
         emailExists,
+        isLoggedIn,
+        loading,
         login,
         register,
         verifyPassword,
-        deleteAccount,
         logout,
         updateProfile,
+        deleteAccount,   // ← REQUIRED by AccountSwitcher
       }}
     >
       {children}

@@ -18,6 +18,21 @@ const Profile = ({ navigation }) => {
 
   if (!user) return null;
 
+  const calculateAge = dob => {
+    if (!dob) return '-';
+    const today = new Date();
+    const birth = new Date(dob);
+
+    let age = today.getFullYear() - birth.getFullYear();
+    const m = today.getMonth() - birth.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* AVATAR */}
@@ -42,7 +57,8 @@ const Profile = ({ navigation }) => {
 
       <View style={styles.infoCard}>
         <Row label="Phone" value={user.phone} />
-        <Row label="Age" value={user.age} />
+        <Row label="Age" value={calculateAge(user.dob)} />
+        <Row label="Date of Birth" value={formatDate(user.dob)} />
         <Row label="Account Created" value={formatDate(user.createdAt)} />
       </View>
 

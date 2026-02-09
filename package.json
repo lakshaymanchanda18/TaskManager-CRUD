@@ -1,5 +1,5 @@
 {
-  "name": "ReactNativeNavigation",
+  "name": "TaskManager-CRUD",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -21,6 +21,7 @@
     "@react-navigation/stack": "^7.6.16",
     "react": "19.2.0",
     "react-native": "0.83.1",
+    "react-native-country-picker-modal": "^2.0.0",
     "react-native-gesture-handler": "^2.30.0",
     "react-native-image-picker": "^8.2.1",
     "react-native-reanimated": "^4.2.1",

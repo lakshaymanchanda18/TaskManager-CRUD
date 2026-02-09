@@ -5,8 +5,12 @@ import DrawerNavigator from './DrawerNavigator';
 import TaskDetails from '../screens/TaskDetails';
 import AddTask from '../screens/AddTask';
 import Login from '../screens/Login';
+import SignIn from '../screens/SignIn';
 import Profile from '../screens/Profile';
 import EditProfile from '../screens/EditProfile';
+import ChangePassword from '../screens/ChangePassword';
+import AccountSwitcher from '../screens/AccountSwitcher';
+import Settings from '../screens/Settings'; // ✅ ADDED
 
 import { useAuth } from '../context/AuthContext';
 
@@ -20,21 +24,27 @@ const StackNavigator = () => {
   return (
     <Stack.Navigator>
       {!user ? (
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{ headerShown: false }}
-        />
+        <>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{ headerShown: false }}
+          />
+
+          <Stack.Screen
+            name="SignIn"
+            component={SignIn}
+            options={{ title: 'Sign In' }}
+          />
+        </>
       ) : (
         <>
-          {/* MAIN APP — NO HEADER */}
           <Stack.Screen
             name="AppDrawer"
             component={DrawerNavigator}
             options={{ headerShown: false }}
           />
 
-          {/* THESE SHOULD HAVE BACK BUTTON */}
           <Stack.Screen
             name="Profile"
             component={Profile}
@@ -48,6 +58,18 @@ const StackNavigator = () => {
           />
 
           <Stack.Screen
+            name="ChangePassword"
+            component={ChangePassword}
+            options={{ title: 'Change Password' }}
+          />
+
+          <Stack.Screen
+            name="Settings"                 // ✅ ADDED
+            component={Settings}
+            options={{ title: 'Settings' }}
+          />
+
+          <Stack.Screen
             name="TaskDetails"
             component={TaskDetails}
             options={{ title: 'Task Details' }}
@@ -57,6 +79,12 @@ const StackNavigator = () => {
             name="AddTask"
             component={AddTask}
             options={{ title: 'Add Task' }}
+          />
+
+          <Stack.Screen
+            name="AccountSwitcher"
+            component={AccountSwitcher}
+            options={{ title: 'Switch Account' }}
           />
         </>
       )}
