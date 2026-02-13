@@ -4,7 +4,7 @@ import { Pressable, View, Text } from 'react-native';
 
 import Home from '../screens/Home';
 import Tasks from '../screens/Tasks';
-import { colors } from '../theme/colors';
+import { useThemeColors } from '../theme/colors';
 import { useAuth } from '../context/AuthContext';
 
 import HomeIcon from '../components/icons/HomeIcon';
@@ -14,11 +14,22 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
   const { user } = useAuth();
+  const colors = useThemeColors();
 
   return (
     <Tab.Navigator
       screenOptions={({ route, navigation }) => ({
         headerTitleAlign: 'center',
+        headerStyle: {
+          backgroundColor: colors.card,
+        },
+        headerTintColor: colors.textPrimary,
+        tabBarStyle: {
+          backgroundColor: colors.card,
+          borderTopColor: colors.border,
+        },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
 
         /* PROFILE AVATAR ON LEFT */
         headerLeft: () => (
@@ -54,7 +65,7 @@ const TabNavigator = () => {
         headerRight: () => null,
 
         tabBarIcon: ({ focused }) => {
-          const color = focused ? colors.primary : '#999';
+          const color = focused ? colors.primary : colors.textSecondary;
 
           if (route.name === 'Home')
             return <HomeIcon color={color} />;

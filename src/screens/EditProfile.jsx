@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useAuth } from '../context/AuthContext';
 import { colors } from '../theme/colors';
@@ -30,11 +31,30 @@ const EditProfile = ({ navigation }) => {
   const [email, setEmail] = useState(user?.email || '');
   const [imageUri, setImageUri] = useState(user?.avatarImage || null);
 
+  // 🔥 DOB STATE
+  const [dob, setDob] = useState(
+    user?.dob ? new Date(user.dob) : new Date(2000, 0, 1)
+  );
+  const [showDob, setShowDob] = useState(false);
+
   const [emailValid, setEmailValid] = useState(true);
   const [checking, setChecking] = useState(false);
 
   const capitalize = t =>
     t ? t.charAt(0).toUpperCase() + t.slice(1).toLowerCase() : '';
+
+  // 🔥 AGE CALCULATOR
+  const calculateAge = date => {
+    const today = new Date();
+    let age = today.getFullYear() - date.getFullYear();
+    const m = today.getMonth() - date.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
 
   const pickImage = async () => {
     const res = await launchImageLibrary({
@@ -93,6 +113,9 @@ const EditProfile = ({ navigation }) => {
       email,
       avatarImage: imageUri,
       avatarLetter: fullName.charAt(0),
+
+      // 🔥 SAVE DOB
+      dob: dob.toISOString(),
     };
 
     await updateProfile(updated);
@@ -168,6 +191,29 @@ const EditProfile = ({ navigation }) => {
         onChangeText={setPhone}
         keyboardType="phone-pad"
       />
+
+      {/* 🔥 DOB SECTION */}
+      <Text style={styles.label}>Date of Birth</Text>
+      <Pressable
+        style={styles.input}
+        onPress={() => setShowDob(true)}
+      >
+        <Text>
+          {dob.toDateString()} • Age: {calculateAge(dob)}
+        </Text>
+      </Pressable>
+
+      {showDob && (
+        <DateTimePicker
+          value={dob}
+          mode="date"
+          maximumDate={new Date()}
+          onChange={(_, selected) => {
+            setShowDob(false);
+            if (selected) setDob(selected);
+          }}
+        />
+      )}
 
       <Pressable
         style={[styles.button, !canSave && { opacity: 0.5 }]}

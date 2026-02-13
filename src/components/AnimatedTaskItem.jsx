@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Animated, Easing, Text, View, StyleSheet } from 'react-native';
+import { Animated, Easing, Text, View, StyleSheet, Pressable, Alert } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 
 import TaskCard from './TaskCard';
@@ -35,17 +35,29 @@ const AnimatedTaskItem = ({ item, onPress, onComplete }) => {
     ]).start();
   }, []);
 
+  const confirmDelete = () => {
+    Alert.alert(
+      'Delete Task',
+      'Are you sure you want to delete this task?',
+      [
+        { text: 'Cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => deleteTask(item.id),
+        },
+      ]
+    );
+  };
+
   const renderRightActions = () => (
-    <View style={styles.deleteBox}>
+    <Pressable style={styles.deleteBox} onPress={confirmDelete}>
       <Text style={styles.deleteText}>Delete</Text>
-    </View>
+    </Pressable>
   );
 
   return (
-    <Swipeable
-      renderRightActions={renderRightActions}
-      onSwipeableOpen={() => deleteTask(item.id)}
-    >
+    <Swipeable renderRightActions={renderRightActions}>
       <Animated.View
         style={{
           opacity: fadeAnim,

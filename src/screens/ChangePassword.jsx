@@ -24,7 +24,7 @@ const hash = str =>
     .toString();
 
 const ChangePassword = ({ navigation }) => {
-  const { user, verifyPassword, updateProfile } = useAuth();
+  const { user, verifyPassword, updateProfile, logout } = useAuth();
 
   const [current, setCurrent] = useState('');
   const [newPass, setNewPass] = useState('');
@@ -47,9 +47,23 @@ const ChangePassword = ({ navigation }) => {
 
   const passwordsMatch = strongPassword && newPass === confirm;
 
+  const isSameAsOld = hash(newPass) === user.password;
+
+  const canSubmit =
+    current.length > 0 &&
+    newPass.length > 0 &&
+    confirm.length > 0 &&
+    passwordsMatch &&
+    !isSameAsOld;
+
   const submit = () => {
-    if (!verifyPassword(current)) {
+    if (!verifyPassword(user.email, current)) {
       Alert.alert('Wrong password', 'Current password is incorrect.');
+      return;
+    }
+
+    if (isSameAsOld) {
+      Alert.alert('Invalid', 'New password cannot be same as old password.');
       return;
     }
 
@@ -58,15 +72,32 @@ const ChangePassword = ({ navigation }) => {
       return;
     }
 
-    const updatedUser = {
-      ...user,
-      password: hash(newPass),
-    };
+    Alert.alert(
+      'Confirm Change',
+      'Changing password will log you out. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Change',
+          onPress: async () => {
+            const updatedUser = {
+              ...user,
+              password: hash(newPass),
+            };
 
-    updateProfile(updatedUser);
+            await updateProfile(updatedUser);
+            await logout();
 
-    Alert.alert('Success', 'Password updated successfully.');
-    navigation.goBack();
+            Alert.alert('Success', 'Password changed. Please sign in again.');
+
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'SignIn' }],
+            });
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -99,6 +130,12 @@ const ChangePassword = ({ navigation }) => {
         </View>
       )}
 
+      {newPass.length > 0 && isSameAsOld && (
+        <Text style={{ color: 'red', marginBottom: spacing.md }}>
+          New password cannot be same as old password
+        </Text>
+      )}
+
       <Text style={styles.label}>Confirm New Password</Text>
       <TextInput
         style={styles.input}
@@ -116,10 +153,10 @@ const ChangePassword = ({ navigation }) => {
       <Pressable
         style={[
           styles.button,
-          !(passwordsMatch && current) && { opacity: 0.5 },
+          !canSubmit && { opacity: 0.5 },
         ]}
         onPress={submit}
-        disabled={!(passwordsMatch && current)}
+        disabled={!canSubmit}
       >
         <Text style={styles.buttonText}>Update Password</Text>
       </Pressable>

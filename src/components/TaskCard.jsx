@@ -92,7 +92,10 @@ const TaskCard = ({ task, onComplete, onPress }) => {
           styles.completeBtn,
           isDone && styles.completedBtn,
         ]}
-        onPress={() => onComplete(task)}
+        onPress={e => {
+          e?.stopPropagation?.();
+          onComplete(task);
+        }}
       >
         <Text style={styles.completeText}>
           {isDone ? 'Mark Pending' : 'Mark Complete'}

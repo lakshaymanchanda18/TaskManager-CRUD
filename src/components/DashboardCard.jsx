@@ -1,46 +1,69 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { colors } from '../theme/colors';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { useThemeColors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
-import { typography } from '../theme/typography';
 
-const DashboardCard = ({ title, value, children }) => {
+const DashboardCard = ({
+  title,
+  value,
+  onPress,
+  children,
+  icon,
+  valueSuffix = '',
+}) => {
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
+
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{title}</Text>
-
-      <Text style={styles.value}>{value}</Text>
-
+    <Pressable style={styles.card} onPress={onPress}>
+      <View>
+        {icon ? <Text style={styles.icon}>{icon}</Text> : null}
+        <Text style={styles.title}>{title}</Text>
+      </View>
+      <Text style={styles.value}>
+        {value}
+        {valueSuffix}
+      </Text>
       {children ? <View style={styles.extra}>{children}</View> : null}
-    </View>
+    </Pressable>
   );
 };
 
 export default React.memo(DashboardCard);
 
-const styles = StyleSheet.create({
-  card: {
-    width: '48%',
-    aspectRatio: 1,                 // 🔑 makes it square
-    backgroundColor: colors.card,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.md,
-    marginBottom: spacing.md,
-    justifyContent: 'space-between',
-  },
-  title: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.textSecondary,
-  },
-  value: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: colors.textPrimary,
-  },
-  extra: {
-    marginTop: spacing.sm,
-  },
-});
+const getStyles = colors =>
+  StyleSheet.create({
+    card: {
+      width: '48%',
+      aspectRatio: 1,
+      backgroundColor: colors.card,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: spacing.md,
+      marginBottom: spacing.md,
+      justifyContent: 'space-between',
+      shadowColor: '#000',
+      shadowOpacity: 0.05,
+      shadowRadius: 8,
+      shadowOffset: { width: 0, height: 4 },
+      elevation: 2,
+    },
+    icon: {
+      fontSize: 20,
+      marginBottom: 6,
+    },
+    title: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.textSecondary,
+    },
+    value: {
+      fontSize: 30,
+      fontWeight: '800',
+      color: colors.textPrimary,
+    },
+    extra: {
+      marginTop: spacing.sm,
+    },
+  });

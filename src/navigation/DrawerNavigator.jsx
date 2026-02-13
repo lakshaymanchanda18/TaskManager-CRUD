@@ -14,7 +14,7 @@ import {
 
 import TabNavigator from './TabNavigator';
 import { useAuth } from '../context/AuthContext';
-import { colors } from '../theme/colors';
+import { useThemeColors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 
 const Drawer = createDrawerNavigator();
@@ -23,6 +23,8 @@ const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent = props => {
   const { user, logout } = useAuth();
+  const colors = useThemeColors();
+  const styles = getStyles(colors);
 
   return (
     <DrawerContentScrollView {...props}>
@@ -63,6 +65,7 @@ const CustomDrawerContent = props => {
       <DrawerItem
         label="Home"
         onPress={() => props.navigation.navigate('Dashboard')}
+        labelStyle={styles.itemLabel}
       />
 
       <DrawerItem
@@ -70,6 +73,7 @@ const CustomDrawerContent = props => {
         onPress={() =>
           props.navigation.getParent().navigate('Profile')
         }
+        labelStyle={styles.itemLabel}
       />
 
       {/* ✅ FIXED: Settings navigation */}
@@ -78,6 +82,7 @@ const CustomDrawerContent = props => {
         onPress={() =>
           props.navigation.getParent().navigate('Settings')
         }
+        labelStyle={styles.itemLabel}
       />
 
       <DrawerItem
@@ -92,11 +97,16 @@ const CustomDrawerContent = props => {
 /* ---------------- DRAWER NAVIGATOR ---------------- */
 
 const DrawerNavigator = () => {
+  const colors = useThemeColors();
+
   return (
     <Drawer.Navigator
       drawerContent={props => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
+        drawerStyle: {
+          backgroundColor: colors.background,
+        },
       }}
     >
       <Drawer.Screen
@@ -111,48 +121,54 @@ export default DrawerNavigator;
 
 /* ---------------- STYLES ---------------- */
 
-const styles = StyleSheet.create({
-  header: {
-    padding: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-  },
+const getStyles = colors =>
+  StyleSheet.create({
+    header: {
+      padding: spacing.lg,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.md,
+    },
 
-  avatar: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
+    avatar: {
+      width: 52,
+      height: 52,
+      borderRadius: 26,
+      justifyContent: 'center',
+      alignItems: 'center',
+      overflow: 'hidden',
+    },
 
-  image: {
-    width: '100%',
-    height: '100%',
-  },
+    image: {
+      width: '100%',
+      height: '100%',
+    },
 
-  avatarText: {
-    color: '#fff',
-    fontWeight: '800',
-    fontSize: 18,
-  },
+    avatarText: {
+      color: '#fff',
+      fontWeight: '800',
+      fontSize: 18,
+    },
 
-  name: {
-    fontWeight: '700',
-    fontSize: 14,
-  },
+    name: {
+      fontWeight: '700',
+      fontSize: 14,
+      color: colors.textPrimary,
+    },
 
-  email: {
-    fontSize: 12,
-    color: colors.textSecondary,
-  },
+    email: {
+      fontSize: 12,
+      color: colors.textSecondary,
+    },
 
-  logout: {
-    color: 'red',
-    fontWeight: '700',
-  },
-});
+    itemLabel: {
+      color: colors.textPrimary,
+    },
+
+    logout: {
+      color: 'red',
+      fontWeight: '700',
+    },
+  });

@@ -10,7 +10,8 @@ import Profile from '../screens/Profile';
 import EditProfile from '../screens/EditProfile';
 import ChangePassword from '../screens/ChangePassword';
 import AccountSwitcher from '../screens/AccountSwitcher';
-import Settings from '../screens/Settings'; // ✅ ADDED
+import Settings from '../screens/Settings';
+import ForgotPassword from '../screens/ForgotPassword';
 
 import { useAuth } from '../context/AuthContext';
 
@@ -35,6 +36,12 @@ const StackNavigator = () => {
             name="SignIn"
             component={SignIn}
             options={{ title: 'Sign In' }}
+          />
+
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPassword}
+            options={{ title: 'Forgot Password' }}
           />
         </>
       ) : (
@@ -64,7 +71,7 @@ const StackNavigator = () => {
           />
 
           <Stack.Screen
-            name="Settings"                 // ✅ ADDED
+            name="Settings"
             component={Settings}
             options={{ title: 'Settings' }}
           />
