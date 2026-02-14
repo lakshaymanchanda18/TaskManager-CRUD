@@ -2,13 +2,14 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useThemeColors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import AppIcon from './icons/AppIcon';
 
 const DashboardCard = ({
   title,
   value,
   onPress,
   children,
-  icon,
+  iconName,
   valueSuffix = '',
 }) => {
   const colors = useThemeColors();
@@ -17,7 +18,15 @@ const DashboardCard = ({
   return (
     <Pressable style={styles.card} onPress={onPress}>
       <View>
-        {icon ? <Text style={styles.icon}>{icon}</Text> : null}
+        {iconName ? (
+          <View style={styles.iconWrap}>
+            <AppIcon
+              name={iconName}
+              size={16}
+              color={colors.textSecondary}
+            />
+          </View>
+        ) : null}
         <Text style={styles.title}>{title}</Text>
       </View>
       <Text style={styles.value}>
@@ -49,9 +58,16 @@ const getStyles = colors =>
       shadowOffset: { width: 0, height: 4 },
       elevation: 2,
     },
-    icon: {
-      fontSize: 20,
-      marginBottom: 6,
+    iconWrap: {
+      width: 30,
+      height: 30,
+      borderRadius: 8,
+      marginBottom: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.background,
+      borderWidth: 1,
+      borderColor: colors.border,
     },
     title: {
       fontSize: 13,

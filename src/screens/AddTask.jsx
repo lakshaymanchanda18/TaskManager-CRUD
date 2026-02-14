@@ -15,6 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 
 import { useTasks } from '../context/TasksContext';
+import AppIcon from '../components/icons/AppIcon';
 import { useThemeColors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
@@ -28,13 +29,24 @@ const formatLocalDate = d => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
+const parseTimeOrNow = value => {
+  if (!value) return new Date();
+  const parsed = new Date(`1970-01-01T${value}`);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+};
+
+const parseDateOrToday = value => {
+  if (!value) return new Date();
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+};
+
 const AddTask = ({ navigation, route }) => {
   const colors = useThemeColors();
   const styles = getStyles(colors);
 
   const { addTask, updateTask, deleteTask } = useTasks();
   const editTask = route?.params?.editTask;
-
   const isEdit = !!editTask;
 
   const [task, setTask] = useState({
@@ -42,13 +54,10 @@ const AddTask = ({ navigation, route }) => {
     title: editTask?.title ?? '',
     description: editTask?.description ?? '',
     priority: editTask?.priority ?? 'MEDIUM',
-    date: editTask?.date ? new Date(editTask.date) : new Date(),
-    fromTime: editTask?.fromTime
-      ? new Date(`1970-01-01T${editTask.fromTime}`)
-      : new Date(),
-    toTime: editTask?.toTime
-      ? new Date(`1970-01-01T${editTask.toTime}`)
-      : new Date(),
+    date: parseDateOrToday(editTask?.date),
+    fromTime: parseTimeOrNow(editTask?.fromTime),
+    toTime: parseTimeOrNow(editTask?.toTime),
+    allDay: !!editTask?.allDay,
     completed: editTask?.completed ?? false,
     createdAt: editTask?.createdAt ?? Date.now(),
   });
@@ -71,7 +80,6 @@ const AddTask = ({ navigation, route }) => {
 
   useEffect(() => {
     if (!showSuccess) return;
-
     successScale.setValue(0.7);
     Animated.spring(successScale, {
       toValue: 1,
@@ -87,6 +95,10 @@ const AddTask = ({ navigation, route }) => {
     });
   }, [navigation, isEdit]);
 
+  const toggleAllDay = () => {
+    setTask(prev => ({ ...prev, allDay: !prev.allDay }));
+  };
+
   const submit = () => {
     if (!task.title.trim()) {
       Alert.alert('Missing Title', 'Task title is required.');
@@ -96,12 +108,10 @@ const AddTask = ({ navigation, route }) => {
     const payload = {
       ...task,
       title: task.title.trim().replace(/\s+/g, ' ').toUpperCase(),
-
-      // 🔥 FIX: LOCAL DATE NOT UTC
       date: formatLocalDate(task.date),
-
-      fromTime: task.fromTime.toTimeString().slice(0, 5),
-      toTime: task.toTime.toTimeString().slice(0, 5),
+      allDay: !!task.allDay,
+      fromTime: task.allDay ? '' : task.fromTime.toTimeString().slice(0, 5),
+      toTime: task.allDay ? '' : task.toTime.toTimeString().slice(0, 5),
     };
 
     if (isEdit) {
@@ -146,58 +156,69 @@ const AddTask = ({ navigation, route }) => {
       <Text style={styles.heading}>{isEdit ? 'Update Task' : 'Create Task'}</Text>
 
       <View style={styles.sectionCard}>
-      <Text style={styles.label}>TITLE</Text>
-      <TextInput
-        style={[styles.input, styles.titleInput]}
-        placeholder="ENTER TASK TITLE"
-        placeholderTextColor={colors.textSecondary}
-        value={task.title}
-        autoCapitalize="characters"
-        onChangeText={v => setTask({ ...task, title: v })}
-      />
+        <Text style={styles.label}>TITLE</Text>
+        <TextInput
+          style={[styles.input, styles.titleInput]}
+          placeholder="ENTER TASK TITLE"
+          placeholderTextColor={colors.textSecondary}
+          value={task.title}
+          autoCapitalize="characters"
+          onChangeText={v => setTask({ ...task, title: v.toUpperCase() })}
+        />
 
-      <Text style={styles.label}>DESCRIPTION</Text>
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Optional description..."
-        placeholderTextColor={colors.textSecondary}
-        multiline
-        value={task.description}
-        onChangeText={v => setTask({ ...task, description: v })}
-      />
+        <Text style={styles.label}>DESCRIPTION</Text>
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          placeholder="Optional description..."
+          placeholderTextColor={colors.textSecondary}
+          multiline
+          value={task.description}
+          onChangeText={v => setTask({ ...task, description: v })}
+        />
 
-      <Text style={styles.label}>PRIORITY</Text>
-      <View style={styles.pickerWrap}>
-        <Picker
-          selectedValue={task.priority}
-          onValueChange={v => setTask({ ...task, priority: v })}
-        >
-          {PRIORITIES.map(p => (
-            <Picker.Item key={p} label={p} value={p} />
-          ))}
-        </Picker>
-      </View>
+        <Text style={styles.label}>PRIORITY</Text>
+        <View style={styles.pickerWrap}>
+          <Picker
+            selectedValue={task.priority}
+            onValueChange={v => setTask({ ...task, priority: v })}
+            style={styles.picker}
+            dropdownIconColor={colors.textPrimary}
+          >
+            {PRIORITIES.map(p => (
+              <Picker.Item key={p} label={p} value={p} color="#111827" />
+            ))}
+          </Picker>
+        </View>
       </View>
 
       <View style={styles.sectionCard}>
-      <Text style={styles.label}>DATE</Text>
-      <Pressable style={styles.selector} onPress={() => setShowDate(true)}>
-        <Text style={styles.selectorText}>{task.date.toDateString()}</Text>
-      </Pressable>
-
-      <View style={styles.timeRow}>
-        <Pressable style={styles.selector} onPress={() => setShowFrom(true)}>
-          <Text style={styles.selectorText}>
-            From: {task.fromTime.toTimeString().slice(0, 5)}
-          </Text>
+        <Text style={styles.label}>DATE</Text>
+        <Pressable style={styles.selector} onPress={() => setShowDate(true)}>
+          <Text style={styles.selectorText}>{task.date.toDateString()}</Text>
         </Pressable>
 
-        <Pressable style={styles.selector} onPress={() => setShowTo(true)}>
-          <Text style={styles.selectorText}>
-            To: {task.toTime.toTimeString().slice(0, 5)}
-          </Text>
+        <Pressable style={styles.allDayRow} onPress={toggleAllDay} accessibilityRole="checkbox">
+          <View style={[styles.checkbox, task.allDay && styles.checkboxChecked]}>
+            {task.allDay ? <AppIcon name="check" size={12} color="#fff" /> : null}
+          </View>
+          <Text style={styles.allDayText}>All Day</Text>
         </Pressable>
-      </View>
+
+        {!task.allDay ? (
+          <View style={styles.timeRow}>
+            <Pressable style={styles.selector} onPress={() => setShowFrom(true)}>
+              <Text style={styles.selectorText}>
+                From: {task.fromTime.toTimeString().slice(0, 5)}
+              </Text>
+            </Pressable>
+
+            <Pressable style={styles.selector} onPress={() => setShowTo(true)}>
+              <Text style={styles.selectorText}>
+                To: {task.toTime.toTimeString().slice(0, 5)}
+              </Text>
+            </Pressable>
+          </View>
+        ) : null}
       </View>
 
       {showDate && (
@@ -211,7 +232,7 @@ const AddTask = ({ navigation, route }) => {
         />
       )}
 
-      {showFrom && (
+      {!task.allDay && showFrom && (
         <DateTimePicker
           value={task.fromTime}
           mode="time"
@@ -222,7 +243,7 @@ const AddTask = ({ navigation, route }) => {
         />
       )}
 
-      {showTo && (
+      {!task.allDay && showTo && (
         <DateTimePicker
           value={task.toTime}
           mode="time"
@@ -234,9 +255,7 @@ const AddTask = ({ navigation, route }) => {
       )}
 
       <Pressable style={styles.button} onPress={submit}>
-        <Text style={styles.buttonText}>
-          {isEdit ? 'UPDATE TASK' : 'ADD TASK'}
-        </Text>
+        <Text style={styles.buttonText}>{isEdit ? 'UPDATE TASK' : 'ADD TASK'}</Text>
       </Pressable>
 
       {isEdit && (
@@ -262,9 +281,13 @@ const AddTask = ({ navigation, route }) => {
               },
             ]}
           >
-            <Text style={styles.successTick}>✅</Text>
+            <View style={styles.successTick}>
+              <AppIcon name="check" size={56} color={colors.primary} />
+            </View>
             <Text style={[styles.successTitle, { color: colors.textPrimary }]}>New Task Created</Text>
-            <Text style={[styles.successSub, { color: colors.textSecondary }]}>Your task has been added successfully.</Text>
+            <Text style={[styles.successSub, { color: colors.textSecondary }]}>
+              Your task has been added successfully.
+            </Text>
 
             <Pressable
               style={[styles.successBtn, { backgroundColor: colors.primary }]}
@@ -336,6 +359,9 @@ const getStyles = colors =>
       borderRadius: 12,
       backgroundColor: colors.card,
     },
+    picker: {
+      color: colors.textPrimary,
+    },
     selector: {
       borderWidth: 1,
       borderColor: colors.border,
@@ -344,10 +370,37 @@ const getStyles = colors =>
       backgroundColor: colors.card,
       height: 52,
       justifyContent: 'center',
+      flex: 1,
     },
     selectorText: {
       fontWeight: '600',
       color: colors.textPrimary,
+    },
+    allDayRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: spacing.md,
+      marginBottom: spacing.sm,
+    },
+    checkbox: {
+      width: 22,
+      height: 22,
+      borderRadius: 6,
+      borderWidth: 1.5,
+      borderColor: colors.border,
+      backgroundColor: colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 10,
+    },
+    checkboxChecked: {
+      backgroundColor: colors.primary,
+      borderColor: colors.primary,
+    },
+    allDayText: {
+      color: colors.textPrimary,
+      fontWeight: '700',
+      fontSize: 14,
     },
     timeRow: {
       flexDirection: 'row',
@@ -389,7 +442,6 @@ const getStyles = colors =>
       alignItems: 'center',
     },
     successTick: {
-      fontSize: 54,
       marginBottom: 8,
     },
     successTitle: {

@@ -3,8 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TasksContext = createContext();
 
-/* ---------- HELPERS ---------- */
-
 const formatDateLocal = date => {
   const d = new Date(date);
   const yyyy = d.getFullYear();
@@ -19,18 +17,30 @@ const timeToMinutes = t => {
   return h * 60 + m;
 };
 
-/* ---------- PROVIDER ---------- */
+const normalizeTask = task => {
+  const isAllDay = !!task?.allDay;
+  return {
+    ...task,
+    allDay: isAllDay,
+    fromTime: isAllDay ? '' : task?.fromTime || '',
+    toTime: isAllDay ? '' : task?.toTime || '',
+  };
+};
+
+const sortByDateTime = (a, b) => {
+  if (a.date !== b.date) {
+    return a.date.localeCompare(b.date);
+  }
+  if (a.allDay && !b.allDay) return -1;
+  if (!a.allDay && b.allDay) return 1;
+  return timeToMinutes(a.fromTime) - timeToMinutes(b.fromTime);
+};
 
 export const TasksProvider = ({ children, user }) => {
   const [tasks, setTasks] = useState([]);
   const [now, setNow] = useState(new Date());
 
-  // unique storage per account
-  const STORAGE_KEY = user
-    ? `@TASKS_APP_DATA_${user.email}`
-    : null;
-
-  /* ---------- LOAD TASKS WHEN USER CHANGES ---------- */
+  const STORAGE_KEY = user ? `@TASKS_APP_DATA_${user.email}` : null;
 
   useEffect(() => {
     if (!STORAGE_KEY) {
@@ -41,22 +51,19 @@ export const TasksProvider = ({ children, user }) => {
     (async () => {
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (stored) {
-        setTasks(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        setTasks(Array.isArray(parsed) ? parsed.map(normalizeTask) : []);
       } else {
-        setTasks([]); // new account → clean start
+        setTasks([]);
       }
     })();
   }, [STORAGE_KEY]);
-
-  /* ---------- SAVE TASKS ---------- */
 
   useEffect(() => {
     if (STORAGE_KEY) {
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     }
   }, [tasks, STORAGE_KEY]);
-
-  /* ---------- CLOCK ---------- */
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -66,30 +73,30 @@ export const TasksProvider = ({ children, user }) => {
     return () => clearInterval(timer);
   }, []);
 
-  /* ---------- CRUD ---------- */
-
   const addTask = task => {
+    const normalized = normalizeTask(task);
     setTasks(prev => [
       {
-        ...task,
+        ...normalized,
         id: Date.now(),
-        title: task.title.toUpperCase(),
+        title: normalized.title.toUpperCase(),
         date:
-          typeof task.date === 'string'
-            ? task.date
-            : formatDateLocal(task.date),
+          typeof normalized.date === 'string'
+            ? normalized.date
+            : formatDateLocal(normalized.date),
       },
       ...prev,
     ]);
   };
 
   const updateTask = updated => {
+    const normalized = normalizeTask(updated);
     setTasks(prev =>
       prev.map(t =>
-        t.id === updated.id
-          ? { ...updated, title: updated.title.toUpperCase() }
-          : t,
-      ),
+        t.id === normalized.id
+          ? { ...normalized, title: normalized.title.toUpperCase() }
+          : t
+      )
     );
   };
 
@@ -98,52 +105,20 @@ export const TasksProvider = ({ children, user }) => {
   };
 
   const toggleComplete = id => {
-    setTasks(prev =>
-      prev.map(t =>
-        t.id === id ? { ...t, completed: !t.completed } : t,
-      ),
-    );
+    setTasks(prev => prev.map(t => (t.id === id ? { ...t, completed: !t.completed } : t)));
   };
 
-  /* ---------- DATE BASE ---------- */
-
   const today = formatDateLocal(now);
-  const tomorrowDate = formatDateLocal(
-    new Date(now.getTime() + 86400000),
-  );
+  const tomorrowDate = formatDateLocal(new Date(now.getTime() + 86400000));
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-  const currentMinutes =
-    now.getHours() * 60 + now.getMinutes();
-
-  /* ---------- GROUPS ---------- */
-
-  const todayTasks = tasks
-    .filter(t => t.date === today && !t.completed)
-    .sort(
-      (a, b) =>
-        timeToMinutes(a.fromTime) -
-        timeToMinutes(b.fromTime),
-    );
+  const todayTasks = tasks.filter(t => t.date === today && !t.completed).sort(sortByDateTime);
 
   const tomorrowTasks = tasks
     .filter(t => t.date === tomorrowDate && !t.completed)
-    .sort(
-      (a, b) =>
-        timeToMinutes(a.fromTime) -
-        timeToMinutes(b.fromTime),
-    );
+    .sort(sortByDateTime);
 
-  // tomorrow included in upcoming
-  const upcomingTasks = tasks
-    .filter(t => t.date > today && !t.completed)
-    .sort((a, b) => {
-      if (a.date !== b.date)
-        return a.date.localeCompare(b.date);
-      return (
-        timeToMinutes(a.fromTime) -
-        timeToMinutes(b.fromTime)
-      );
-    });
+  const upcomingTasks = tasks.filter(t => t.date > today && !t.completed).sort(sortByDateTime);
 
   const completedTasks = tasks
     .filter(t => t.completed)
@@ -151,25 +126,20 @@ export const TasksProvider = ({ children, user }) => {
 
   const startingSoon = tasks
     .filter(t => {
-      if (t.completed || t.date !== today) return false;
-      const diff =
-        timeToMinutes(t.fromTime) - currentMinutes;
+      if (t.completed || t.date !== today || t.allDay) return false;
+      const diff = timeToMinutes(t.fromTime) - currentMinutes;
       return diff >= 0 && diff <= 60;
     })
-    .sort(
-      (a, b) =>
-        timeToMinutes(a.fromTime) -
-        timeToMinutes(b.fromTime),
-    );
+    .sort(sortByDateTime);
 
   const overdueTasks = tasks
     .filter(t => {
       if (t.completed) return false;
       if (t.date < today) return true;
-      if (t.date === today)
-        return (
-          timeToMinutes(t.fromTime) < currentMinutes
-        );
+      if (t.date === today) {
+        if (t.allDay) return false;
+        return timeToMinutes(t.fromTime) < currentMinutes;
+      }
       return false;
     })
     .map(t => ({ ...t, overdue: true }))
@@ -177,36 +147,18 @@ export const TasksProvider = ({ children, user }) => {
 
   const reminderTasks = tasks
     .filter(t => {
-      if (t.completed || t.date !== today) return false;
+      if (t.completed || t.date !== today || t.allDay) return false;
       const diff = timeToMinutes(t.fromTime) - currentMinutes;
       return diff >= -30 && diff <= 120;
     })
-    .sort(
-      (a, b) =>
-        timeToMinutes(a.fromTime) -
-        timeToMinutes(b.fromTime),
-    );
-
-  /* ---------- STATS ---------- */
+    .sort(sortByDateTime);
 
   const total = tasks.length;
   const completed = completedTasks.length;
   const pending = total - completed;
-  const progress =
-    total === 0
-      ? 0
-      : Math.round((completed / total) * 100);
+  const progress = total === 0 ? 0 : Math.round((completed / total) * 100);
 
-  const allTasks = tasks
-    .filter(t => !t.completed)
-    .sort((a, b) => {
-      if (a.date !== b.date)
-        return a.date.localeCompare(b.date);
-      return (
-        timeToMinutes(a.fromTime) -
-        timeToMinutes(b.fromTime)
-      );
-    });
+  const allTasks = tasks.filter(t => !t.completed).sort(sortByDateTime);
 
   return (
     <TasksContext.Provider

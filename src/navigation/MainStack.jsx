@@ -41,7 +41,11 @@ const MainStack = () => {
       />
 
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen
+        name="EditProfile"
+        component={EditProfile}
+        options={{ title: 'Edit Profile' }}
+      />
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen name="TaskDetails" component={TaskDetails} />

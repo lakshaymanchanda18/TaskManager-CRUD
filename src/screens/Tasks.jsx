@@ -31,13 +31,21 @@ const Tasks = ({ navigation, route }) => {
     toggleComplete,
   } = useTasks();
 
-  const initial = route?.params?.filter || 'all';
+  const incomingFilter = route?.params?.filter;
 
   const [query, setQuery] = useState('');
-  const [activeFilter, setActiveFilter] = useState(initial);
+  const [activeFilter, setActiveFilter] = useState('all');
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const listFade = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (incomingFilter && FILTERS.includes(incomingFilter)) {
+      setActiveFilter(prev =>
+        prev === incomingFilter ? prev : incomingFilter
+      );
+    }
+  }, [incomingFilter]);
 
   useEffect(() => {
     listFade.setValue(0.55);

@@ -12,6 +12,8 @@ import ChangePassword from '../screens/ChangePassword';
 import AccountSwitcher from '../screens/AccountSwitcher';
 import Settings from '../screens/Settings';
 import ForgotPassword from '../screens/ForgotPassword';
+import About from '../screens/About';
+import HelpSupport from '../screens/HelpSupport';
 
 import { useAuth } from '../context/AuthContext';
 
@@ -92,6 +94,18 @@ const StackNavigator = () => {
             name="AccountSwitcher"
             component={AccountSwitcher}
             options={{ title: 'Switch Account' }}
+          />
+
+          <Stack.Screen
+            name="About"
+            component={About}
+            options={{ title: 'About' }}
+          />
+
+          <Stack.Screen
+            name="HelpSupport"
+            component={HelpSupport}
+            options={{ title: 'Help & Support' }}
           />
         </>
       )}

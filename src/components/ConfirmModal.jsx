@@ -1,42 +1,41 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  StyleSheet,
-  Pressable,
-} from 'react-native';
+import { View, Text, Modal, StyleSheet, Pressable } from 'react-native';
 
+import AppIcon from './icons/AppIcon';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 
-const ConfirmModal = ({
-  visible,
-  task,
-  onCancel,
-  onConfirm,
-}) => {
+const ConfirmModal = ({ visible, task, onCancel, onConfirm }) => {
   if (!task) return null;
+  const taskTime = task.allDay ? 'All day' : `${task.fromTime} - ${task.toTime}`;
 
   return (
     <Modal transparent animationType="fade" visible={visible}>
       <View style={styles.overlay}>
         <View style={styles.card}>
-          <Text style={styles.title}>
-            {task.title.toUpperCase()}
-          </Text>
+          <Text style={styles.title}>{task.title.toUpperCase()}</Text>
 
-          {task.description ? (
-            <Text style={styles.desc}>{task.description}</Text>
-          ) : null}
+          {task.description ? <Text style={styles.desc}>{task.description}</Text> : null}
 
-          <Text style={styles.meta}>
-            📅 {task.date}
-          </Text>
-          <Text style={styles.meta}>
-            ⏰ {task.fromTime} – {task.toTime}
-          </Text>
+          <View style={styles.metaRow}>
+            <AppIcon
+              name="calendar"
+              size={13}
+              color={colors.textSecondary}
+              style={styles.metaIcon}
+            />
+            <Text style={styles.meta}>{task.date}</Text>
+          </View>
+          <View style={styles.metaRow}>
+            <AppIcon
+              name="clock"
+              size={13}
+              color={colors.textSecondary}
+              style={styles.metaIcon}
+            />
+            <Text style={styles.meta}>{taskTime}</Text>
+          </View>
 
           <Text style={styles.warning}>
             {task.completed
@@ -45,17 +44,11 @@ const ConfirmModal = ({
           </Text>
 
           <View style={styles.actions}>
-            <Pressable
-              style={[styles.btn, styles.cancel]}
-              onPress={onCancel}
-            >
+            <Pressable style={[styles.btn, styles.cancel]} onPress={onCancel}>
               <Text style={styles.cancelText}>Cancel</Text>
             </Pressable>
 
-            <Pressable
-              style={[styles.btn, styles.confirm]}
-              onPress={onConfirm}
-            >
+            <Pressable style={[styles.btn, styles.confirm]} onPress={onConfirm}>
               <Text style={styles.confirmText}>Yes</Text>
             </Pressable>
           </View>
@@ -89,6 +82,14 @@ const styles = StyleSheet.create({
   desc: {
     ...typography.body,
     marginBottom: spacing.sm,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  metaIcon: {
+    marginRight: 6,
   },
   meta: {
     fontSize: 12,

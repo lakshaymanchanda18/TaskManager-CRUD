@@ -9,32 +9,38 @@ import {
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { useThemeColors } from '../theme/colors';
+import AppIcon from '../components/icons/AppIcon';
 
 import AuthStack from './AuthStack';
 import MainStack from './MainStack';
 
 const ONBOARDING_STEPS = [
   {
-    title: 'Welcome 👋',
+    icon: 'wave',
+    title: 'Welcome',
     subtitle: 'Great to have you in TaskManager',
   },
   {
-    title: 'Plan Your Day 📅',
+    icon: 'calendar',
+    title: 'Plan Your Day',
     subtitle: 'Create tasks with date, time and priority',
   },
   {
-    title: 'Track Progress ✅',
+    icon: 'check',
+    title: 'Track Progress',
     subtitle: 'Use Today, Upcoming and Completed tabs to stay on top',
   },
 ];
 
 const LOGIN_STEPS = [
   {
-    title: 'Welcome Back 👋',
+    icon: 'wave',
+    title: 'Welcome Back',
     subtitle: 'Good to see you again',
   },
   {
-    title: 'Quick Tip ⚡',
+    icon: 'bolt',
+    title: 'Quick Tip',
     subtitle: 'Open Home for reminders and one-tap completion',
   },
 ];
@@ -119,6 +125,9 @@ const RootNavigator = () => {
             },
           ]}
         >
+          <View style={[styles.iconWrap, { borderColor: colors.border, backgroundColor: colors.background }]}>
+            <AppIcon name={item.icon} size={24} color={colors.primary} />
+          </View>
           <Text style={[styles.title, { color: colors.textPrimary }]}>{item.title}</Text>
           <Text style={[styles.subtitle, { color: colors.textSecondary }]}>{item.subtitle}</Text>
           <Text style={[styles.progress, { color: colors.textSecondary }]}>
@@ -161,6 +170,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 24,
     alignItems: 'center',
+  },
+  iconWrap: {
+    width: 52,
+    height: 52,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    marginBottom: 12,
   },
   title: {
     fontSize: 28,

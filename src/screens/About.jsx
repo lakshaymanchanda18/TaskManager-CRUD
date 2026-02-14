@@ -3,11 +3,15 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
+import TaskManagerLogo from '../components/icons/TaskManagerLogo';
 
 const About = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Task Manager</Text>
+      <View style={styles.header}>
+        <TaskManagerLogo size={40} color={colors.primary} />
+        <Text style={styles.title}>Task Manager</Text>
+      </View>
 
       <Text style={styles.version}>Version 1.0</Text>
 
@@ -35,9 +39,15 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
 
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.md,
+  },
+
   title: {
     ...typography.heading,
-    marginBottom: spacing.sm,
+    marginLeft: spacing.md,
   },
 
   version: {

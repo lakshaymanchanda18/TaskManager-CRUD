@@ -9,6 +9,7 @@ import { useAuth } from '../context/AuthContext';
 
 import HomeIcon from '../components/icons/HomeIcon';
 import TasksIcon from '../components/icons/TasksIcon';
+import TaskManagerLogo from '../components/icons/TaskManagerLogo';
 
 const Tab = createBottomTabNavigator();
 
@@ -61,8 +62,12 @@ const TabNavigator = () => {
           </Pressable>
         ),
 
-        /* REMOVE RIGHT SIDE ICON */
-        headerRight: () => null,
+        /* APP LOGO ON RIGHT */
+        headerRight: () => (
+          <View style={{ marginRight: 14 }}>
+            <TaskManagerLogo size={28} color={colors.primary} />
+          </View>
+        ),
 
         tabBarIcon: ({ focused }) => {
           const color = focused ? colors.primary : colors.textSecondary;

@@ -5,14 +5,7 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import {
-  Text,
-  StyleSheet,
-  Pressable,
-  Alert,
-  Animated,
-  Easing,
-} from 'react-native';
+import { Text, StyleSheet, Pressable, Alert, Animated, Easing } from 'react-native';
 
 import { useTasks } from '../context/TasksContext';
 import ConfirmStatusModal from '../components/ConfirmStatusModal';
@@ -39,16 +32,15 @@ const TaskDetails = ({ route, navigation }) => {
     }).start();
   }, [screenAnim]);
 
-  const task = useMemo(
-    () => tasks.find(t => t.id === initialTask.id),
-    [tasks, initialTask.id]
-  );
+  const task = useMemo(() => tasks.find(t => t.id === initialTask.id), [tasks, initialTask.id]);
 
   useLayoutEffect(() => {
     navigation.setOptions({ title: 'Task Details' });
   }, [navigation]);
 
   if (!task) return null;
+
+  const taskTime = task.allDay ? 'All day' : `${task.fromTime} - ${task.toTime}`;
 
   const handleToggle = () => {
     if (task.completed) {
@@ -63,24 +55,20 @@ const TaskDetails = ({ route, navigation }) => {
   };
 
   const handleDelete = () => {
-    Alert.alert(
-      'Delete Task',
-      'Are you sure you want to delete this task?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
+    Alert.alert('Delete Task', 'Are you sure you want to delete this task?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => {
+          deleteTask(task.id);
+          navigation.goBack();
         },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => {
-            deleteTask(task.id);
-            navigation.goBack();
-          },
-        },
-      ]
-    );
+      },
+    ]);
   };
 
   return (
@@ -104,17 +92,13 @@ const TaskDetails = ({ route, navigation }) => {
       <Text style={styles.desc}>{task.description}</Text>
 
       <Text style={styles.meta}>
-        {task.date} • {task.fromTime} - {task.toTime}
+        {task.date} | {taskTime}
       </Text>
 
-      <Text style={styles.status}>
-        Status: {task.completed ? 'Completed' : 'Pending'}
-      </Text>
+      <Text style={styles.status}>Status: {task.completed ? 'Completed' : 'Pending'}</Text>
 
       <Pressable style={styles.button} onPress={handleToggle}>
-        <Text style={styles.buttonText}>
-          {task.completed ? 'Mark Pending' : 'Mark Complete'}
-        </Text>
+        <Text style={styles.buttonText}>{task.completed ? 'Mark Pending' : 'Mark Complete'}</Text>
       </Pressable>
 
       <Pressable style={styles.editBtn} onPress={handleEdit}>
@@ -147,31 +131,26 @@ const getStyles = colors =>
       padding: spacing.lg,
       backgroundColor: colors.background,
     },
-
     title: {
       ...typography.heading,
       marginBottom: spacing.md,
       color: colors.textPrimary,
     },
-
     desc: {
       ...typography.body,
       marginBottom: spacing.md,
       color: colors.textPrimary,
     },
-
     meta: {
       fontSize: 12,
       color: colors.textSecondary,
       marginBottom: spacing.md,
     },
-
     status: {
       marginBottom: spacing.lg,
       fontWeight: '600',
       color: colors.textPrimary,
     },
-
     button: {
       backgroundColor: colors.primary,
       padding: spacing.md,
@@ -179,7 +158,6 @@ const getStyles = colors =>
       alignItems: 'center',
       marginBottom: spacing.sm,
     },
-
     editBtn: {
       backgroundColor: colors.card,
       borderWidth: 1,
@@ -189,19 +167,16 @@ const getStyles = colors =>
       alignItems: 'center',
       marginBottom: spacing.sm,
     },
-
     deleteBtn: {
       backgroundColor: '#d11a2a',
       padding: spacing.md,
       borderRadius: 10,
       alignItems: 'center',
     },
-
     buttonText: {
       color: '#fff',
       fontWeight: '700',
     },
-
     editBtnText: {
       color: colors.textPrimary,
       fontWeight: '700',

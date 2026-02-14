@@ -16,6 +16,7 @@ import TabNavigator from './TabNavigator';
 import { useAuth } from '../context/AuthContext';
 import { useThemeColors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import TaskManagerLogo from '../components/icons/TaskManagerLogo';
 
 const Drawer = createDrawerNavigator();
 
@@ -81,6 +82,22 @@ const CustomDrawerContent = props => {
         label="Settings"
         onPress={() =>
           props.navigation.getParent().navigate('Settings')
+        }
+        labelStyle={styles.itemLabel}
+      />
+
+      <DrawerItem
+        label="About"
+        onPress={() =>
+          props.navigation.getParent().navigate('About')
+        }
+        labelStyle={styles.itemLabel}
+      />
+
+      <DrawerItem
+        label="Help & Support"
+        onPress={() =>
+          props.navigation.getParent().navigate('HelpSupport')
         }
         labelStyle={styles.itemLabel}
       />
