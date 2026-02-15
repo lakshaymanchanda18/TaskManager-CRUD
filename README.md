@@ -1,97 +1,283 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# TaskManager-CRUD
 
-# Getting Started
+A modern, feature-rich task management application built with React Native. TaskManager-CRUD provides a comprehensive solution for organizing your daily tasks with an intuitive interface, powerful filtering options, and robust data management.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 🚀 Features
 
-## Step 1: Start Metro
+### Core Functionality
+- **Create Tasks**: Add new tasks with detailed information including title, description, priority, and time
+- **Read Tasks**: View all tasks with comprehensive filtering and search capabilities
+- **Update Tasks**: Edit existing tasks and mark them as complete/incomplete
+- **Delete Tasks**: Remove tasks you no longer need
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+### Advanced Features
+- **Smart Dashboard**: Real-time progress tracking with key metrics and insights
+- **Priority Management**: Categorize tasks as High, Medium, or Low priority
+- **Time Management**: Set specific times, dates, and all-day options for tasks
+- **Reminders System**: Built-in reminder functionality for important tasks
+- **Search & Filter**: Powerful search across all tasks with multiple filter options
+- **Dark/Light Theme**: Automatic theme switching based on system preferences
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+### User Experience
+- **Biometric Authentication**: Secure login using fingerprint or face recognition
+- **Profile Management**: Complete user profile with avatar, personal information, and settings
+- **Multi-language Support**: Built-in country picker for international users
+- **Intuitive Navigation**: Tab-based navigation with drawer menu for easy access
 
-```sh
-# Using npm
-npm start
+### Technical Features
+- **Offline Support**: Local storage with AsyncStorage for reliable data persistence
+- **Responsive Design**: Optimized for both phones and tablets
+- **Performance Optimized**: Smooth animations and efficient rendering
+- **Accessibility**: Full accessibility support with proper ARIA labels and navigation
 
-# OR using Yarn
-yarn start
-```
+## 🛠️ Tech Stack
 
-## Step 2: Build and run your app
+### Frontend
+- **React Native** 0.83.1 - Cross-platform mobile development
+- **React** 19.2.0 - UI component library
+- **React Navigation** - Navigation and routing
+- **React Native Reanimated** - Smooth animations
+- **React Native Gesture Handler** - Touch interactions
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+### State Management & Storage
+- **Context API** - State management for tasks and authentication
+- **AsyncStorage** - Local data persistence
+- **Biometrics** - Secure authentication
+
+### UI & Styling
+- **React Native Safe Area Context** - Safe area handling
+- **React Native Screens** - Optimized screen rendering
+- **React Native SVG** - Vector graphics support
+
+### Development Tools
+- **TypeScript** - Type safety and better development experience
+- **ESLint** - Code linting and formatting
+- **Jest** - Testing framework
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js (version 20 or higher)
+- React Native development environment set up
+- Android Studio (for Android development)
+- Xcode (for iOS development, macOS only)
+
+### Setup Instructions
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd TaskManager-CRUD
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **For iOS development (macOS only)**
+   ```bash
+   # Install CocoaPods dependencies
+   bundle install
+   bundle exec pod install
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm start
+   # or
+   yarn start
+   ```
+
+## 🚀 Running the Application
 
 ### Android
-
-```sh
-# Using npm
+```bash
 npm run android
-
-# OR using Yarn
+# or
 yarn android
 ```
 
 ### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+```bash
 npm run ios
-
-# OR using Yarn
+# or
 yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 📋 Project Structure
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```
+TaskManager-CRUD/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── DashboardCard.jsx
+│   │   ├── TaskCard.jsx
+│   │   ├── ConfirmModal.jsx
+│   │   └── icons/           # Custom icon components
+│   ├── context/            # React Context providers
+│   │   ├── TasksContext.jsx
+│   │   └── AuthContext.jsx
+│   ├── navigation/         # Navigation configuration
+│   │   ├── RootNavigator.jsx
+│   │   ├── TabNavigator.jsx
+│   │   └── DrawerNavigator.jsx
+│   ├── screens/            # Main application screens
+│   │   ├── Home.jsx
+│   │   ├── Tasks.jsx
+│   │   ├── AddTask.jsx
+│   │   ├── Profile.jsx
+│   │   └── Settings.jsx
+│   ├── services/           # API and data services
+│   │   └── api.js
+│   ├── theme/              # Theme and styling
+│   │   ├── colors.js
+│   │   ├── spacing.js
+│   │   └── typography.js
+│   └── animations/         # Animation utilities
+│       └── fadeIn.js
+├── android/                # Android-specific files
+├── ios/                    # iOS-specific files
+├── __tests__/              # Test files
+└── assets/                 # Static assets
+```
 
-## Step 3: Modify your app
+## 🔧 Configuration
 
-Now that you have successfully run the app, let's make changes!
+### Environment Variables
+No environment variables are required for basic functionality. The application uses local storage for data persistence.
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+### Theme Customization
+The application supports theme customization through the theme system:
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+```javascript
+// In src/theme/colors.js
+export const lightTheme = {
+  primary: '#4F46E5',
+  background: '#FFFFFF',
+  card: '#FFFFFF',
+  textPrimary: '#111827',
+  textSecondary: '#6B7280',
+  border: '#E5E7EB',
+};
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+export const darkTheme = {
+  primary: '#818CF8',
+  background: '#0B1220',
+  card: '#111827',
+  textPrimary: '#F9FAFB',
+  textSecondary: '#9CA3AF',
+  border: '#1F2937',
+};
+```
 
-## Congratulations! :tada:
+## 🧪 Testing
 
-You've successfully run and modified your React Native App. :partying_face:
+The project includes Jest for testing:
 
-### Now what?
+```bash
+# Run all tests
+npm test
+# or
+yarn test
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+# Run tests with coverage
+npm test -- --coverage
+```
 
-# Troubleshooting
+## 📱 Supported Platforms
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- **Android** 5.0 (API level 21) and above
+- **iOS** 12.0 and above
 
-# Learn More
+## 🔒 Security Features
 
-To learn more about React Native, take a look at the following resources:
+- **Biometric Authentication**: Secure login using device biometrics
+- **Data Encryption**: Sensitive data is encrypted locally
+- **Secure Storage**: Uses AsyncStorage with security best practices
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 🌐 Internationalization
+
+The application supports multiple languages and regions:
+- Built-in country picker for user preferences
+- Date and time formatting based on locale
+- RTL language support ready
+
+## 📊 Performance
+
+- **Optimized Rendering**: Uses FlatList for efficient task display
+- **Memory Management**: Proper cleanup and state management
+- **Smooth Animations**: 60fps animations with React Native Reanimated
+- **Offline First**: Works without internet connection
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+### Development Setup
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes
+4. Run tests: `npm test`
+5. Commit your changes: `git commit -m 'Add feature'`
+6. Push to the branch: `git push origin feature-name`
+7. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+If you encounter any issues or have questions:
+
+1. **Check the [FAQ](#faq) section below**
+2. **Search existing issues** on our [GitHub Issues](https://github.com/your-repo/TaskManager-CRUD/issues)
+3. **Create a new issue** if you can't find a solution
+4. **Join our community** on Discord (link to be added)
+
+## 📞 Contact
+
+For support and inquiries:
+- **Email**: lakshaymanchanda574@gmail.com/support@taskmanagercrud.com
+- **Website**: [taskmanagercrud.com](https://taskmanagercrud.com) (Under Construction)
+- **GitHub**: [@lakshaymanchanda18](https://github.com/lakshaymanchanda18)
+- **LinkedIn**: [@Lakshay Manchanda](https://www.linkedin.com/in/lakshay-manchanda-2431a3319/)
+
+## 🤔 FAQ
+
+### How do I reset my password?
+Navigate to Settings → Change Password to update your password securely.
+
+### Can I use the app without internet?
+Yes! The application works completely offline using local storage.
+
+### How are my tasks backed up?
+Tasks are stored locally on your device. For backup, consider using cloud storage solutions.
+
+### Is my data secure?
+Yes, all data is stored locally and encrypted. We don't transmit your task data to any servers.
+
+### How do I enable biometric authentication?
+Go to Settings → Security and enable biometric login.
+
+## 🔄 Changelog
+
+### Version 1.0.0
+- Initial release with core CRUD functionality
+- Dashboard with progress tracking
+- Task management with priority and time settings
+- Biometric authentication
+- Dark/light theme support
+
+## 🙏 Acknowledgments
+
+- React Native community for the excellent framework
+- All contributors who helped make this project possible
+- Users who provided valuable feedback during development
+
+---
+
+**TaskManager-CRUD** - Your reliable companion for task management. 🚀
