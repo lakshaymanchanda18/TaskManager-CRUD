@@ -214,7 +214,7 @@ The application supports multiple languages and regions:
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](https://github.com/lakshaymanchanda18/TaskManager-CRUD/blob/main/CONTRIBUTING.md) for details.
 
 ### Development Setup
 1. Fork the repository
@@ -227,13 +227,13 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/lakshaymanchanda18/TaskManager-CRUD/blob/main/LICENSE) file for details.
 
 ## 🆘 Support
 
 If you encounter any issues or have questions:
 
-1. **Check the [FAQ](#faq) section below**
+1. **Check the [FAQ](https://github.com/lakshaymanchanda18/TaskManager-CRUD/blob/main/FAQ.md) section below**
 2. **Search existing issues** on our [GitHub Issues](https://github.com/your-repo/TaskManager-CRUD/issues)
 3. **Create a new issue** if you can't find a solution
 4. **Join our community** on Discord (link to be added)
